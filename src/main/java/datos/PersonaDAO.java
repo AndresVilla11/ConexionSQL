@@ -10,7 +10,8 @@ public class PersonaDAO {
 	private static final String SQL_INSERT = "INSERT INTO persona(nombre, apellido, email, telefono) VALUES(?, ?, ?, ?)";
 	private static final String SQL_DELETE = "DELETE FROM persona WHERE id_persona = ?";
 	private static final String SQL_UPDATE = "UPDATE persona SET nombre = ?, apellido = ?, email = ?, telefono = ? WHERE id_persona ?";
-
+	private static final String SQL_INSERT_USER = "INSERT INTO persona (id_persona, nombre, apellido, email, telefono) VALUES (?, ?, ?, ?, ?)";
+	
 	public Persona seleccionarUsuario(int id) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -89,6 +90,33 @@ public class PersonaDAO {
 			stmt.setString(2, persona.getApellido());
 			stmt.setString(3, persona.getEmail());
 			stmt.setString(4, persona.getTelefono());
+			registrosCambios = stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				close(conn);
+				close(stmt);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return registrosCambios;
+	}
+	
+	public int insertarUsuario(Persona persona) {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		int registrosCambios = 0;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement(SQL_INSERT_USER);
+			stmt.setInt(1, persona.getIdPersona());
+			stmt.setString(2, persona.getNombre());
+			stmt.setString(3, persona.getApellido());
+			stmt.setString(4, persona.getEmail());
+			stmt.setString(5, persona.getTelefono());
 			registrosCambios = stmt.executeUpdate();
 
 		} catch (SQLException e) {

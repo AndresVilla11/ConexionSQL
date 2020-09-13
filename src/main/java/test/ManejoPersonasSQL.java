@@ -12,7 +12,7 @@ public class ManejoPersonasSQL {
 		Persona persona = new Persona();
 		while (opcion != 0) {
 			System.out.println("\n" + "Bienvenido, que accion desea realizar: \n" + "1. Imprimir lista de usuarios. \n"
-					+ "2. Imprimir un usuario. \n" + "3. Insertar un usuario. \n"
+					+ "2. Imprimir un usuario. \n" + "3. Insertar un usuario nuevo. \n"
 					+ "4. Actualizar datos de un usuario. \n" + "5. Eliminar un usuario. \n");
 			opcion = Integer.parseInt(teclado.nextLine());
 			switch (opcion) {
