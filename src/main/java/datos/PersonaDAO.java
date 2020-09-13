@@ -11,6 +11,39 @@ public class PersonaDAO {
 	private static final String SQL_DELETE = "DELETE FROM persona WHERE id_persona = ?";
 	private static final String SQL_UPDATE = "UPDATE persona SET nombre = ?, apellido = ?, email = ?, telefono = ? WHERE id_persona ?";
 
+	public Persona seleccionarUsuario(int id) {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		Persona persona = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement(SQL_SELECT);
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				int idPersona = rs.getInt("id_persona");
+				if (idPersona == id) {
+					String nombre = rs.getString("nombre");
+					String apellido = rs.getString("apellido");
+					String email = rs.getString("email");
+					String telefono = rs.getString("telefono");
+					persona = new Persona(idPersona, nombre, apellido, email, telefono);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				close(rs);
+				close(stmt);
+				close(conn);
+			} catch (SQLException e) {
+				e.printStackTrace(System.out);
+			}
+		}
+		return persona;
+	}
+
 	public List<Persona> seleccionar() {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -97,7 +130,7 @@ public class PersonaDAO {
 		}
 		return registrosCambios;
 	}
-	
+
 	public int eliminar(Persona persona) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
