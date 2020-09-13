@@ -98,7 +98,6 @@ public class PersonaDAO {
 		return registrosCambios;
 	}
 	
-	
 	public int eliminar(Persona persona) {
 		Connection conn = null;
 		PreparedStatement stmt = null;

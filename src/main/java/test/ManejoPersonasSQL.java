@@ -7,7 +7,7 @@ import domain.Persona;
 public class ManejoPersonasSQL {
 
 	public static void main(String[] args) {
-		
+		eliminar();
 	}
 
 	public static void seleccionar() {
@@ -26,13 +26,20 @@ public class ManejoPersonasSQL {
 		seleccionar();
 		System.out.println("Se cambiaron: " + registroCambio + " registros.");
 	}
-	
+
 	public static void actualizar() {
 		PersonaDAO personaDao = new PersonaDAO();
-		Persona persona = new Persona(1,"ASDA","qwertyui","qwerq@mail","123456789987654");
+		Persona persona = new Persona(1, "ASDA", "qwertyui", "qwerq@mail", "123456789987654");
 		int registroCambio = personaDao.actualizar(persona);
 		seleccionar();
-		System.out.println("Se cambiaron: " + registroCambio + " registros.");		
+		System.out.println("Se cambiaron: " + registroCambio + " registros.");
 	}
 
+	public static void eliminar() {
+		PersonaDAO personaDao = new PersonaDAO();
+		Persona persona = new Persona(1);
+		int registroCambio = personaDao.eliminar(persona);
+		seleccionar();
+		System.out.println("Se eliminaron: " + registroCambio + " registros.");
+	}
 }
