@@ -6,19 +6,29 @@ import java.util.*;
 import domain.Persona;
 
 public class PersonaDAO {
+
+	private Connection conexionTransaccion;
 	private static final String SQL_SELECT = "SELECT id_persona, nombre, apellido, email, telefono FROM persona";
 	private static final String SQL_INSERT = "INSERT INTO persona(nombre, apellido, email, telefono) VALUES(?, ?, ?, ?)";
 	private static final String SQL_DELETE = "DELETE FROM persona WHERE id_persona = ?";
 	private static final String SQL_UPDATE = "UPDATE persona SET nombre = ?, apellido = ?, email = ?, telefono = ? WHERE id_persona ?";
 	private static final String SQL_INSERT_USER = "INSERT INTO persona (id_persona, nombre, apellido, email, telefono) VALUES (?, ?, ?, ?, ?)";
-	
-	public Persona seleccionarUsuario(int id) {
+
+	public PersonaDAO() {
+
+	}
+
+	public PersonaDAO(Connection conexionTransaccion) {
+		this.conexionTransaccion = conexionTransaccion;
+	}
+
+	public Persona seleccionarUsuario(int id) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		Persona persona = null;
 		try {
-			conn = getConnection();
+			conn = this.conexionTransaccion != null ? this.conexionTransaccion : getConnection();
 			stmt = conn.prepareStatement(SQL_SELECT);
 			rs = stmt.executeQuery();
 			while (rs.next()) {
@@ -29,23 +39,22 @@ public class PersonaDAO {
 					String email = rs.getString("email");
 					String telefono = rs.getString("telefono");
 					persona = new Persona(idPersona, nombre, apellido, email, telefono);
+					break;
 				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				close(rs);
-				close(stmt);
+			close(rs);
+			close(stmt);
+			if (this.conexionTransaccion == null) {
 				close(conn);
-			} catch (SQLException e) {
-				e.printStackTrace(System.out);
 			}
 		}
 		return persona;
 	}
 
-	public List<Persona> seleccionar() {
+	public List<Persona> seleccionar() throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -53,7 +62,7 @@ public class PersonaDAO {
 		List<Persona> personas = new ArrayList<>();
 
 		try {
-			conn = getConnection();
+			conn = this.conexionTransaccion != null ? this.conexionTransaccion : getConnection();
 			stmt = conn.prepareStatement(SQL_SELECT);
 			rs = stmt.executeQuery();
 			while (rs.next()) {
@@ -68,23 +77,21 @@ public class PersonaDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				close(rs);
-				close(stmt);
+			close(rs);
+			close(stmt);
+			if (this.conexionTransaccion == null) {
 				close(conn);
-			} catch (SQLException e) {
-				e.printStackTrace(System.out);
 			}
 		}
 		return personas;
 	}
 
-	public int insertar(Persona persona) {
+	public int insertar(Persona persona) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		int registrosCambios = 0;
 		try {
-			conn = getConnection();
+			conn = this.conexionTransaccion != null ? this.conexionTransaccion : getConnection();
 			stmt = conn.prepareStatement(SQL_INSERT);
 			stmt.setString(1, persona.getNombre());
 			stmt.setString(2, persona.getApellido());
@@ -95,22 +102,20 @@ public class PersonaDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
+			close(stmt);
+			if (this.conexionTransaccion == null) {
 				close(conn);
-				close(stmt);
-			} catch (SQLException e) {
-				e.printStackTrace();
 			}
 		}
 		return registrosCambios;
 	}
-	
-	public int insertarUsuario(Persona persona) {
+
+	public int insertarUsuario(Persona persona) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		int registrosCambios = 0;
 		try {
-			conn = getConnection();
+			conn = this.conexionTransaccion != null ? this.conexionTransaccion : getConnection();
 			stmt = conn.prepareStatement(SQL_INSERT_USER);
 			stmt.setInt(1, persona.getIdPersona());
 			stmt.setString(2, persona.getNombre());
@@ -122,22 +127,20 @@ public class PersonaDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
+			close(stmt);
+			if (this.conexionTransaccion == null) {
 				close(conn);
-				close(stmt);
-			} catch (SQLException e) {
-				e.printStackTrace();
 			}
 		}
 		return registrosCambios;
 	}
 
-	public int actualizar(Persona persona) {
+	public int actualizar(Persona persona) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		int registrosCambios = 0;
 		try {
-			conn = getConnection();
+			conn = this.conexionTransaccion != null ? this.conexionTransaccion : getConnection();
 			stmt = conn.prepareStatement(SQL_UPDATE);
 			stmt.setString(1, persona.getNombre());
 			stmt.setString(2, persona.getApellido());
@@ -149,33 +152,29 @@ public class PersonaDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
+			close(stmt);
+			if (this.conexionTransaccion == null) {
 				close(conn);
-				close(stmt);
-			} catch (SQLException e) {
-				e.printStackTrace();
 			}
 		}
 		return registrosCambios;
 	}
 
-	public int eliminar(Persona persona) {
+	public int eliminar(Persona persona) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		int registrosCambios = 0;
 		try {
-			conn = getConnection();
+			conn = this.conexionTransaccion != null ? this.conexionTransaccion : getConnection();
 			stmt = conn.prepareStatement(SQL_DELETE);
 			stmt.setInt(1, persona.getIdPersona());
 			registrosCambios = stmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
+			close(stmt);
+			if (this.conexionTransaccion == null) {
 				close(conn);
-				close(stmt);
-			} catch (SQLException e) {
-				e.printStackTrace();
 			}
 		}
 		return registrosCambios;

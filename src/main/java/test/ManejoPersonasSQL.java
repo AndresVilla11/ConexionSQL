@@ -1,12 +1,17 @@
 package test;
 
+import java.sql.*;
 import java.util.*;
 import datos.*;
-import domain.Persona;
+import domain.*;
 
 public class ManejoPersonasSQL {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException {
+		Connection conexion = Conexion.getConnection();
+		if(conexion.getAutoCommit()) {
+			conexion.setAutoCommit(false);
+		}
 		int opcion = -1;
 		Scanner teclado = new Scanner(System.in);
 		Persona persona = new Persona();
@@ -18,10 +23,12 @@ public class ManejoPersonasSQL {
 			switch (opcion) {
 			case 1:
 				AccesoDatos.imprimir();
+				conexion.commit();
 				break;
 			case 2:
 				System.out.println("Ingrese en ID del usuario a actualizar: \n");
 				AccesoDatos.imprimirUsuario(Integer.parseInt(teclado.nextLine()));
+				conexion.commit();
 				break;
 			case 3:
 				System.out.println("Escriba el nombre del usuario: \n");
@@ -33,6 +40,7 @@ public class ManejoPersonasSQL {
 				System.out.println("Escribe el telefono del usuario: \n");
 				persona.setTelefono(teclado.nextLine());
 				AccesoDatos.insertar(persona);
+				conexion.commit();
 				break;
 			case 4:
 				int idActualizar = -1;
@@ -48,6 +56,7 @@ public class ManejoPersonasSQL {
 				System.out.println("Escribe el telefono del usuario: \n");
 				persona.setTelefono(teclado.nextLine());
 				AccesoDatos.actualizar(persona);
+				conexion.commit();
 				break;
 			case 5:
 				int idEliminar = -1;
@@ -55,12 +64,15 @@ public class ManejoPersonasSQL {
 				idEliminar = Integer.parseInt(teclado.nextLine());
 				persona.setIdPersona(idEliminar);
 				AccesoDatos.eliminar(persona);
+				conexion.commit();
 				break;
 			case 0:
 				System.out.println("Hasta luego.");
+				conexion.commit();
 				break;
 			default:
 				System.out.println("Opcion no reconocida.");
+				conexion.commit();
 				break;
 			}
 		}
